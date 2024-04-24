@@ -3,7 +3,10 @@
 
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   index,
+  integer,
+  pgEnum,
   pgTableCreator,
   serial,
   timestamp,
@@ -18,17 +21,25 @@ import {
  */
 export const createTable = pgTableCreator((name) => `helios_${name}`);
 
-export const posts = createTable(
-  "post",
+export const foods = createTable(
+  "food",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt"),
-  },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
-  })
+    name: varchar("name", { length: 256 }).notNull(),
+    calories: integer("calories").notNull(),
+    isPerGrams:  boolean("is_per_grams").notNull(),
+  }
+
+);
+const dietTypeEnum  = ["breakfast", "lunch", "dinner", "snack"] as const;
+export type DietType = typeof dietTypeEnum[number];
+export const dietType = pgEnum("helios_diet_type",dietTypeEnum );
+export const diet = createTable(
+  "diet",
+  {
+    id: serial("id").primaryKey(),
+    foodId: integer("food_id").references(() => foods.id).notNull(), // foreign key
+    type: dietType("helios_diet_type").notNull(),
+    quantity: integer("quantity").notNull(),
+  }
 );
