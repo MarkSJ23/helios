@@ -1,5 +1,5 @@
 import "~/styles/globals.css";
-
+import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
 
 const inter = Inter({
@@ -19,13 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
-        {children}
-        <footer className="bg-black p-24 text-4xl text-white">
-          <div> Helios: Elevate Your</div> <div>Fitness Journey</div>
-        </footer>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`font-sans ${inter.variable}`}>
+          {children}
+          <footer className="bg-black p-24 text-4xl text-white">
+            <div> Helios: Elevate Your</div> <div>Fitness Journey</div>
+          </footer>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

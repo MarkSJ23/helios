@@ -18,59 +18,54 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+
+import { useRouter } from "next/navigation";
+import { insertdiet } from "~/server/actions";
 export default function Diet(props: {
   type: DietType;
   foods: Awaited<ReturnType<typeof getfoods>>;
 }) {
-  const [userfoods, setUserfoods] = useState<typeof props.foods>([]);
   const [open, setOpen] = useState(false);
-  console.log(props);
+  const router = useRouter();
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{props.type}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="w-[200px] justify-between"
-            >
-              Search Foods
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
-            <Command>
-              <CommandInput placeholder="Search framework..." />
-              <CommandEmpty>No framework found.</CommandEmpty>
-              <CommandGroup>
-                {props.foods.map((food) => (
-                  <CommandItem
-                    key={food.id}
-                    value={food.name}
-                    onSelect={(currentValue) => {
-                      //setUserfoods([...userfoods, food]);
-                    }}
-                  >
-                    {food.name}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </CardContent>
-    </Card>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-[200px] justify-between"
+        >
+          Search Foods
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+        <Command>
+          <CommandInput placeholder="Search Food..." />
+          <CommandEmpty>No food found</CommandEmpty>
+          <CommandGroup>
+            {props.foods.map((food) => (
+              <CommandItem
+                key={food.id}
+                value={food.name}
+                onSelect={(currentValue) => {
+                  setOpen(false);
+
+                  if (food.isPerGrams) {
+                    insertdiet(food.id, props.type, 100);
+                  } else {
+                    insertdiet(food.id, props.type, 1);
+                  }
+                  router.refresh();
+                }}
+              >
+                {food.name}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }
