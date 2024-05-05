@@ -1,6 +1,8 @@
 import "~/styles/globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
+import Navbar from "~/components/navbar";
+import SignUpPage from "~/components/signuppage";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,10 +23,17 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`font-sans ${inter.variable}`}>
-          {children}
-          <footer className="bg-black p-24 text-4xl text-white">
-            <div> Helios: Elevate Your</div> <div>Fitness Journey</div>
+        <body
+          className={`min-w-screen flex min-h-screen flex-col font-sans ${inter.variable}`}
+        >
+          <Navbar />
+          <SignedIn>{children}</SignedIn>
+          <SignedOut>
+            <SignUpPage />
+          </SignedOut>
+          <footer className="grow-0 bg-black p-24 text-4xl text-white">
+            <div> Helios: Elevate Your</div>
+            <div>Fitness Journey</div>
           </footer>
         </body>
       </html>

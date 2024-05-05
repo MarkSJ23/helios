@@ -40,6 +40,13 @@ export async function getPushUpLeaderboard() {
   return pushUpLeaderboard;
 }
 
+export async function getSpecificUserInfo(userId: string) {
+  const userInfo = await db.query.userData.findFirst({
+    where: (model, { eq }) => eq(model.userId, userId),
+  });
+  return userInfo;
+}
+
 export async function getUserInfo() {
   const user = auth();
   if (!user.userId) throw new Error("unauthorized");
@@ -49,6 +56,7 @@ export async function getUserInfo() {
   });
   return userInfo;
 }
+
 export async function getRoutine() {
   const user = auth();
   if (!user.userId) throw new Error("unauthorized");

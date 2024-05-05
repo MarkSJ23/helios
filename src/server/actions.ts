@@ -9,7 +9,7 @@ import {
   userData,
   workoutLog,
 } from "./db/schema";
-import { eq, or } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
 
 export async function insertdiet(
@@ -38,7 +38,7 @@ export async function updatediet(id: number, quantity: number) {
     .set({
       quantity: quantity,
     })
-    .where(or(eq(diet.userId, user.userId), eq(diet.id, id)));
+    .where(and(eq(diet.userId, user.userId), eq(diet.id, id)));
 }
 
 export async function deletediet(id: number) {
@@ -48,7 +48,7 @@ export async function deletediet(id: number) {
 
   await db
     .delete(diet)
-    .where(or(eq(diet.userId, user.userId), eq(diet.id, id)));
+    .where(and(eq(diet.userId, user.userId), eq(diet.id, id)));
 }
 
 export async function updateSquatleaderboard(squatHighScore: number) {
@@ -77,10 +77,10 @@ export async function updatePushUpleaderboard(pushUpHighScore: number) {
     .where(eq(userData.userId, user.userId));
 }
 
-export async function updateUserInfo(
+export async function upsertUserInfo(
+  age: number,
   weight: number,
   height: number,
-  age: number,
   calorie_target: number,
 ) {
   const user = auth();
@@ -88,33 +88,23 @@ export async function updateUserInfo(
   if (!user.userId) throw new Error("unauthorized");
 
   await db
-    .update(userData)
-    .set({
+    .insert(userData)
+    .values({
+      userId: user.userId,
       weight: weight,
       height: height,
       age: age,
       calorieTarget: calorie_target,
     })
-    .where(eq(userData.userId, user.userId));
-}
-
-export async function insertUserInfo(
-  weight: number,
-  height: number,
-  age: number,
-  calorie_target: number,
-) {
-  const user = auth();
-
-  if (!user.userId) throw new Error("unauthorized");
-
-  await db.insert(userData).values({
-    userId: user.userId,
-    weight: weight,
-    height: height,
-    age: age,
-    calorieTarget: calorie_target,
-  });
+    .onConflictDoUpdate({
+      target: userData.userId,
+      set: {
+        weight: weight,
+        height: height,
+        age: age,
+        calorieTarget: calorie_target,
+      },
+    });
 }
 
 export async function updateRoutine(
@@ -136,7 +126,7 @@ export async function updateRoutine(
       notes: notes,
       exercises: exercises,
     })
-    .where(or(eq(routine.userId, user.userId), eq(routine.id, id)));
+    .where(and(eq(routine.userId, user.userId), eq(routine.id, id)));
 }
 
 export async function insertRoutine(
@@ -165,7 +155,7 @@ export async function deleteRoutine(id: number) {
 
   await db
     .delete(routine)
-    .where(or(eq(routine.userId, user.userId), eq(routine.id, id)));
+    .where(and(eq(routine.userId, user.userId), eq(routine.id, id)));
 }
 
 export async function insertWorkoutLog(routine_id: number, date: Date) {
@@ -195,7 +185,7 @@ export async function updateWorkoutLog(
       routineId: routine_id,
       date: date,
     })
-    .where(or(eq(workoutLog.userId, user.userId), eq(workoutLog.id, id)));
+    .where(and(eq(workoutLog.userId, user.userId), eq(workoutLog.id, id)));
 }
 
 export async function deleteWorkoutLog(id: number) {
@@ -205,5 +195,5 @@ export async function deleteWorkoutLog(id: number) {
 
   await db
     .delete(workoutLog)
-    .where(or(eq(workoutLog.userId, user.userId), eq(workoutLog.id, id)));
+    .where(and(eq(workoutLog.userId, user.userId), eq(workoutLog.id, id)));
 }
