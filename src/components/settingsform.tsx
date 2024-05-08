@@ -101,29 +101,4 @@ export function SettingsForm(props: {
       </form>
     </Form>
   );
-
-  //   return (
-  //     <form className="flex w-1/2 grow-0 flex-col gap-2">
-  //       <Label htmlFor="age">Age</Label>
-  //       <Input required={true} type="number" id="age" placeholder="Age" />
-
-  //       <Label htmlFor="weight">Weight(kg)</Label>
-  //       <Input required={true} type="number" id="weight" placeholder="Weight" />
-
-  //       <Label htmlFor="height">Height(m)</Label>
-  //       <Input required={true} type="number" id="height" placeholder="Height" />
-
-  //       <Label htmlFor="target-calories" ries>
-  //         Target Calories
-  //       </Label>
-  //       <Input
-  //         required={true}
-  //         type="number"
-  //         id="target-calories"
-  //         placeholder="Target Calories"
-  //       />
-
-  //       <Button type="submit">Save</Button>
-  //     </form>
-  //   );
 }

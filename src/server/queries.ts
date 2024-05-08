@@ -66,10 +66,20 @@ export async function getRoutine() {
   return routine;
 }
 
+export async function getSpecificRoutine(routineId: number) {
+  const user = auth();
+  if (!user.userId) throw new Error("unauthorized");
+  const routine = await db.query.routine.findFirst({
+    where: (model, { eq, and }) =>
+      and(eq(model.userId, user.userId), eq(model.id, routineId)),
+  });
+  return routine;
+}
+
 export async function getWorkoutLog() {
   const user = auth();
   if (!user.userId) throw new Error("unauthorized");
-  const workoutlog = await db.query.workoutLog.findMany({
+  const Workoutlog = await db.query.workoutLog.findMany({
     where: (model, { eq }) => eq(model.userId, user.userId),
     orderBy: (model, { desc }) => desc(model.date),
     limit: 7,
@@ -77,5 +87,5 @@ export async function getWorkoutLog() {
       routine: true,
     },
   });
-  return workoutLog;
+  return Workoutlog;
 }

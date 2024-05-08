@@ -55,7 +55,7 @@ export const workoutLog = createTable("workout_log", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id", { length: 256 }).notNull(),
   routineId: integer("routine_id")
-    .references(() => routine.id)
+    .references(() => routine.id, { onDelete: "cascade" })
     .notNull(), // foreign key
   date: timestamp("date").notNull(),
 });

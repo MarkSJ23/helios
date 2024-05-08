@@ -32,8 +32,8 @@ export default function RootLayout({
             <SignUpPage />
           </SignedOut>
           <footer className="grow-0 bg-black p-24 text-4xl text-white">
-            <div> Helios: Elevate Your</div>
-            <div>Fitness Journey</div>
+            <div className="font-extrabold"> Helios: Elevate Your</div>
+            <div className="font-extrabold">Fitness Journey</div>
           </footer>
         </body>
       </html>

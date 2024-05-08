@@ -60,7 +60,7 @@ export default async function HomePage() {
         {typesOfFood.map((food) => (
           <Card>
             <CardHeader>
-              <CardTitle>{food.type}</CardTitle>
+              <CardTitle>{food.name}</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-2 p-2">
               <Diet type={food.type as DietType} foods={foods}></Diet>
